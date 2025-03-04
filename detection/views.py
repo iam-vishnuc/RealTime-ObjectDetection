@@ -262,6 +262,7 @@ def stream_video(request):
 
     return StreamingHttpResponse(generate_frames(), content_type='multipart/x-mixed-replace; boundary=frame')
 
+@login_required
 def live_stream(request):
     context = {
         'video_stream_url': reverse('stream_video'),
