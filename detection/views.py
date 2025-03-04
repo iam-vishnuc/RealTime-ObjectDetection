@@ -38,7 +38,7 @@ REPORTS_DIR = 'media/reports/'
 os.makedirs(PROCESSED_DIR, exist_ok=True)
 os.makedirs(REPORTS_DIR, exist_ok=True)
 
-@login_required
+
 def home(request):
     return render(request, 'base.html')
 
