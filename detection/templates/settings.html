@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Settings</h2>
+<h3>{{ message }}</h3>
+<!-- Section to switch the model -->
+<h3>Switch Model</h3>
+<form method="POST" action="/update_settings">
+    {% csrf_token %}
+    <label for="model">Select Model:</label>
+    <select name="model" id="model">
+        {% for model in models %}
+            <option value="{{ model }}">{{ model }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" name="action" value="switch_model">Switch Model</button>
+</form>
+
+<!-- Section to adjust confidence threshold -->
+<h3>Adjust Confidence Threshold</h3>
+<form method="POST" action="/update_settings">
+    {% csrf_token %}
+    <label for="confidence">Confidence Threshold:</label>
+    <input type="number" id="confidence" name="confidence" min="0.1" max="1.0" step="0.1" value="{{ default_confidence }}">
+    <button type="submit" name="action" value="update_confidence">Update Threshold</button>
+</form>
+
+
+
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="Live">
+    Live Video Stream
+</h1>
+
+
+<div class="video-container">
+    <img src="/stream_video" alt="Live Video Feed">
+</div>
+<div>
+    <!-- Label Information -->
+    <h2>Detected Objects:</h2>
+    <ul id="label-list"></ul>
+</div>
+
+{% endblock %}

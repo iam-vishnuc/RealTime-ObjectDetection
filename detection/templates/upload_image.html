@@ -1,0 +1,54 @@
+{% extends "upload.html" %}
+{% block content %}
+<h2>Upload Image for Object Detection</h2>
+<br>
+<a href="{% url 'upload_video' %}">upload video</a>
+
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="image">Select an image:</label>
+    <input type="file" name="image" id="image" accept="image/*" alt="Upload Image" onchange="previewImage(event)" required>
+    <br><br>
+    
+    <div id="image-preview">
+        <img id="preview" src="#" >
+    </div>
+        
+    {% if processed_image %}
+        <h2>Processed Image</h2>
+        <img id="preview" src="{{ processed_image }}" alt="Processed Image" style="max-width: 100%; height: auto;">
+    {% endif %}
+    <br>
+    <button type="submit">Upload</button>
+</form>
+
+{% if detections %}
+    <h3>Detection Results:</h3>
+    <ul class="detection-results">
+        {% for detection in detections %}
+            <li class="detection-result_li">
+                <strong>{{ detection.name }}</strong> - Confidence: {{ detection.confidence|floatformat:2 }}
+                (x1: {{ detection.x1 }}, y1: {{ detection.y1 }}, x2: {{ detection.x2 }}, y2: {{ detection.y2 }})
+            </li>
+        {% endfor %}
+    </ul>
+    <h4>Label Counts:</h4>
+    <ul>
+        {% for label, count in label_count.items %}
+            <li>{{ label }}: {{ count }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% load custom_filters %}
+
+<div>
+    <a href="/download/image/{{ processed_image|basename }}" class="btn btn-primary">Download Processed Image</a>
+    <a href="/download/report/{{ report|basename }}" class="btn btn-secondary">Download Report (JSON)</a>
+</div>
+
+
+
+
+{% endblock %}

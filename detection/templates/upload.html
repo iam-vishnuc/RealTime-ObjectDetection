@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="upload">
+    <div class="container">
+        <h2 class="text-center mb-5">Upload Media</h2>
+        <ul class="nav nav-tabs justify-content-center" id="uploadTabs">
+            <li class="nav-item">
+                <a class="nav-link active" id="image-tab" data-toggle="tab" href="#image" style="color: gray  !important;">Image</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="video-tab" data-toggle="tab" href="#video" style="color: gray !important;">Video</a>
+            </li>
+        </ul>
+        <div class="tab-content mt-4">
+            <div class="tab-pane fade show active" id="image">
+                <h2>Upload Image for Object Detection</h2>
+
+                <form method="POST" enctype="multipart/form-data" action="{% url 'upload_image' %}">
+                    {% csrf_token %}
+                    <label for="image">Select an image:</label>
+                    <input type="file" name="image" id="image" accept="image/*" alt="Upload Image"
+                        onchange="previewImage(event)" required>
+                    <br><br>
+
+                    <div id="image-preview">
+                        <img id="preview" src="#">
+                    </div>
+
+                    {% if processed_image %}
+                    <h2>Processed Image</h2>
+                    <img id="preview" src="{{ processed_image }}" alt="Processed Image"
+                        style="max-width: 100%; height: auto;">
+                    {% endif %}
+                    <br>
+                    <button type="submit">Upload</button>
+                </form>
+
+                {% if detections %}
+                <h3>Detection Results:</h3>
+                <ul class="detection-results">
+                    {% for detection in detections %}
+                    <li class="detection-result_li">
+                        <strong>{{ detection.name }}</strong> - Confidence: {{ detection.confidence|floatformat:2 }}
+                        (x1: {{ detection.x1 }}, y1: {{ detection.y1 }}, x2: {{ detection.x2 }}, y2: {{ detection.y2 }})
+                    </li>
+                    {% endfor %}
+                </ul>
+                <h4>Label Counts:</h4>
+                <ul>
+                    {% for label, count in label_count.items %}
+                    <li>{{ label }}: {{ count }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                {% load custom_filters %}
+
+                <div>
+                    <a href="/download/image/{{ processed_image|basename }}" class="btn btn-primary">Download Processed
+                        Image</a>
+                    <a href="/download/report/{{ report|basename }}" class="btn btn-secondary">Download Report
+                        (JSON)</a>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="video">
+                <h2>Upload Video for Object Detection</h2>
+
+                <form method="POST" enctype="multipart/form-data" action="{% url 'upload_video' %}">
+                    {% csrf_token %}
+                    <label for="video">Select a video:</label>
+                    <input type="file" name="video" id="video" accept="video/*" required>
+                    <br><br>
+                    <button type="submit">Upload</button>
+                </form>
+
+                {% if video_path %}
+                <h3>Original Video:</h3>
+                <video width="640" height="360" controls>
+                    <source src="{{ video_path }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+
+                <h3>Processed Video:</h3>
+                <video width="640" height="360" controls>
+                    <source src="{{ processed_video_path }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+
+                <h3>Detection Report:</h3>
+                {% endif %}
+                <a href="/download/report/{{ report|basename }}" class="btn btn-primary">Download Report (JSON)</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

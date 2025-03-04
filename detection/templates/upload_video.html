@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Upload Video for Object Detection</h2>
+<br>
+<a href="{% url 'upload_image' %}">upload image</a> 
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="video">Select a video:</label>
+    <input type="file" name="video" id="video" accept="video/*" required>
+    <br><br>
+    <button type="submit">Upload</button>
+</form>
+
+{% if video_path %}
+    <h3>Original Video:</h3>
+    <video width="640" height="360" controls>
+        <source src="{{ video_path }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <h3>Processed Video:</h3>
+    <video width="640" height="360" controls>
+        <source src="{{ processed_video_path }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <h3>Detection Report:</h3>
+    <a href="{{ report_path }}" class="btn btn-primary">Download Report (JSON)</a>
+{% endif %}
+{% endblock %}
